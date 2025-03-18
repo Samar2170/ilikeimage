@@ -4,19 +4,29 @@ import { PhotoIcon } from "@heroicons/react/24/outline";
 import {ArrowDownTrayIcon, ChevronDownIcon} from "@heroicons/react/24/outline";
 import { navOpts } from "@/app/lib/data/navOpts";
 import { baseUrl } from "@/app/lib/data/constants";
+import { FillColors } from "@/app/lib/data/fillColors";
+import ColorSelector from "./colorSelector";
 
-
+class DownloadFile {
+    name: string;
+    url: string;
+    constructor(name: string, url: string) {
+        this.name = name;
+        this.url = url;
+    }
+}
 
 export default function FilePage(props:{
     handler?: string
 }) {
     const [file, setFile] = useState<File | null>(null);
     const [filePreview, setFilePreview] = useState<string | null>(null);
-    const [convertedFile, setConvertedFile] = useState<File | null>(null);
+    const [convertedFile, setConvertedFile] = useState<DownloadFile | null>(null);
     const [dst,setDst] = useState("");
     const [colorEnabled, setColorEnabled] = useState(false);
     const [color,setColor] = useState("");
     const [apiUrl,setApiUrl] = useState("");
+    const [heading, setHeading] = useState("");
 
     function generateUuid() : string {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -25,13 +35,6 @@ export default function FilePage(props:{
         });
       }
 
-    //   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     console.log(event.target.files);
-    //   if (!event.target.files || event.target.files.length === 0) {
-    //     return;
-    //   }
-    //   setFile(event.target.files[0]);
-    // };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
           return;
@@ -46,13 +49,14 @@ export default function FilePage(props:{
     async function downloadFile(res:Response) {
         const blob =await res.blob();
         const url = window.URL.createObjectURL(blob); // Create a temporary URL
-        const a = document.createElement("a"); // Create an anchor tag
-        a.href = url;
-        a.download = res.headers.get("Content-Disposition") || "file"+dst;
-        document.body.appendChild(a);
-        a.click(); // Trigger download
-        document.body.removeChild(a); // Cleanup
-        window.URL.revokeObjectURL(url); 
+        // const a = document.createElement("a"); // Create an anchor tag
+        // a.href = url;
+        // a.download = res.headers.get("Content-Disposition") || "file"+dst;
+        // document.body.appendChild(a);
+        // a.click(); // Trigger download
+        // document.body.removeChild(a); // Cleanup
+        // window.URL.revokeObjectURL(url); 
+        setConvertedFile(new DownloadFile(res.headers.get("Content-Disposition") || "file"+dst, url));
     }
     function handleSubmit() {
         if (file) {
@@ -87,6 +91,7 @@ export default function FilePage(props:{
         if (navOpt) {
             setDst(navOpt.dst);
             setApiUrl(navOpt.apiPath);
+            setHeading(navOpt.name);
             if (navOpt.id==="fillbg") {
                 setColorEnabled(true);
             } else {
@@ -100,7 +105,7 @@ export default function FilePage(props:{
         <form>
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
-              <h2 className="text-base/7 font-semibold text-gray-900"></h2>
+              <h2 className="text-base/7 font-semibold text-gray-900">{heading}</h2>
               <p className="mt-1 text-sm/6 text-gray-600">
                 Please upload your file and we will convert it for you
               </p>
@@ -137,27 +142,16 @@ export default function FilePage(props:{
                     </div>
                     </div>
                 </div>
+            
             { colorEnabled ?
             <div className="sm:col-span-3">
               <label htmlFor="color" className="block text-sm/6 font-medium text-gray-900">
                 Color
               </label>
-              <div className="mt-2 grid grid-cols-1">
-                <select
-                  id="color"
-                  name="color"
-                  autoComplete="color-name"
-                  className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                >
-                </select>
-                <ChevronDownIcon
-                  aria-hidden="true"
-                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-                />
-              </div>
+                <ColorSelector colors={FillColors}/>
             </div>
             : <></>}
-          <div className="mt-6 flex items-center justify-end gap-x-6">
+                    <div className="mt-6 flex items-center justify-end gap-x-6">
             
             <button
                 onClick={(e) => {e.preventDefault(); handleSubmit();}}
@@ -167,6 +161,7 @@ export default function FilePage(props:{
               Submit
             </button>
           </div>
+          
 
     
                 <div className="col-span-full">
@@ -176,7 +171,12 @@ export default function FilePage(props:{
                 </label>
                 <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                   <div className="text-center">
-                    <ArrowDownTrayIcon aria-hidden="true" className="mx-auto size-12 text-gray-300" />
+                  {convertedFile ? (
+                    <img src={convertedFile.url} alt="Uploaded File" className="mx-auto h-24 w-24 rounded-md object-cover" />
+                    ) : (
+                        <ArrowDownTrayIcon aria-hidden="true" className="mx-auto size-12 text-gray-300" />
+                    )}
+                    
                     <div className="mt-4 flex text-sm/6 text-gray-600">
                       {convertedFile ? (
                         <a

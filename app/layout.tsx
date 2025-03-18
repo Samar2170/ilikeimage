@@ -2,21 +2,14 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react'
 import {
   Bars3Icon,
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
   XMarkIcon,
   
 } from '@heroicons/react/24/outline'
 import { useSearchParams,useRouter } from "next/navigation";
-import { endpoints } from "./lib/data/constants";
 
 import { imageOpts, imageConvertOpts, excelOpts, docxPdfOpts } from "./lib/data/navOpts";
 
@@ -44,12 +37,17 @@ export default function RootLayout({
   const searchParams = useSearchParams();
   const pathname = '/';
   const { replace } = useRouter();
+  const [active, setActive] = useState(searchParams.get("handler") || "jpeg2png");
 
   function handleClick(id:string) {
     const params = new URLSearchParams(searchParams);
     params.set("handler", id);
     replace(`${pathname}?${params.toString()}`);
   }
+
+  useEffect(() => {
+    setActive(searchParams.get("handler") || "jpeg2png") 
+  }, [searchParams]);
   return (
     <html>
       <title>I Like Image</title>
@@ -94,7 +92,7 @@ export default function RootLayout({
                             <button
                               onClick={() => handleClick(item.id)}
                               className={classNames(
-                                item.current
+                                active===item.id
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -107,7 +105,7 @@ export default function RootLayout({
                         ))}
                       </ul>
                     </li>
-                    <li>
+                    <li>                      
                     <div className="text-xs/6 font-semibold text-gray-400">Image Tools</div>
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
@@ -116,7 +114,7 @@ export default function RootLayout({
                             <button
                             onClick={() => handleClick(item.id)}
                               className={classNames(
-                                item.current
+                                active===item.id
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -139,7 +137,7 @@ export default function RootLayout({
                             <button
                               onClick={() => handleClick(item.id)}
                               className={classNames(
-                                item.current
+                                active===item.id
                                   ? 'bg-gray-800 text-white'
                                   : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -181,7 +179,7 @@ export default function RootLayout({
                         <button
                           onClick={() => handleClick(item.id)}
                           className={classNames(
-                            item.current
+                            active===item.id
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -202,7 +200,7 @@ export default function RootLayout({
                         <button
                           onClick={() => handleClick(item.id)}
                           className={classNames(
-                            item.current
+                            active===item.id
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -223,7 +221,7 @@ export default function RootLayout({
                         <button
                           onClick={() => handleClick(item.id)}
                           className={classNames(
-                            item.current
+                            active===item.id
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -244,7 +242,7 @@ export default function RootLayout({
                         <button
                           onClick={() => handleClick(item.id)}
                           className={classNames(
-                            item.current
+                            active===item.id
                               ? 'bg-gray-800 text-white'
                               : 'text-gray-400 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
@@ -271,7 +269,7 @@ export default function RootLayout({
           
         </div>
         
-        <main className="flex flex-col lg:pl-72 px-4 sm:px-6 lg:px-8 bg-white">
+        <main className="flex flex-col h-screen  bg-white lg:pl-72 px-4 sm:px-6 lg:px-8">
           <div className="px-4 sm:px-6 lg:px-8 bg-white">{children}</div>
         </main>
       </div>
