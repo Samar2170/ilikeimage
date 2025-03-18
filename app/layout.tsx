@@ -1,23 +1,15 @@
 'use client'
 import "./globals.css";
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react'
 import {
   Bars3Icon,
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
   XMarkIcon,
   
 } from '@heroicons/react/24/outline'
 import { useSearchParams,useRouter } from "next/navigation";
-import { endpoints } from "./lib/data/constants";
-
+import { getFingerprint } from "./lib/fingerpint";
 import { imageOpts, imageConvertOpts, excelOpts, docxPdfOpts } from "./lib/data/navOpts";
 
 function classNames(...classes: string[]) {
@@ -44,6 +36,7 @@ export default function RootLayout({
   const searchParams = useSearchParams();
   const pathname = '/';
   const { replace } = useRouter();
+  
 
   function handleClick(id:string) {
     const params = new URLSearchParams(searchParams);
@@ -271,7 +264,7 @@ export default function RootLayout({
           
         </div>
         
-        <main className="flex flex-col lg:pl-72 px-4 sm:px-6 lg:px-8 bg-white">
+        <main className="flex flex-col h-screen bg-white lg:pl-72 px-4 sm:px-6 lg:px-8">
           <div className="px-4 sm:px-6 lg:px-8 bg-white">{children}</div>
         </main>
       </div>

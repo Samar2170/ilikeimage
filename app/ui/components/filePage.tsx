@@ -4,6 +4,7 @@ import { PhotoIcon } from "@heroicons/react/24/outline";
 import {ArrowDownTrayIcon, ChevronDownIcon} from "@heroicons/react/24/outline";
 import { navOpts } from "@/app/lib/data/navOpts";
 import { baseUrl } from "@/app/lib/data/constants";
+import { getFingerprint } from "@/app/lib/fingerpint";
 
 
 
@@ -17,6 +18,9 @@ export default function FilePage(props:{
     const [colorEnabled, setColorEnabled] = useState(false);
     const [color,setColor] = useState("");
     const [apiUrl,setApiUrl] = useState("");
+    const [visitorId, setVisitorId] = useState("");
+
+
 
     function generateUuid() : string {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -24,14 +28,6 @@ export default function FilePage(props:{
           return v.toString(16);
         });
       }
-
-    //   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     console.log(event.target.files);
-    //   if (!event.target.files || event.target.files.length === 0) {
-    //     return;
-    //   }
-    //   setFile(event.target.files[0]);
-    // };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
           return;
@@ -82,6 +78,7 @@ export default function FilePage(props:{
         }
     }
     useEffect(() => {
+      console.log(visitorId);
         const h=props.handler;
         const navOpt = navOpts.find((opt) => opt.id === h);
         if (navOpt) {
@@ -93,6 +90,12 @@ export default function FilePage(props:{
                 setColorEnabled(false);
             }
         }
+        const fetchFingerprint = async () => {
+          const id = await getFingerprint();
+          setVisitorId(id);
+        };
+        fetchFingerprint();
+        console.log(visitorId);
       }, [props.handler]);
 
     return (
