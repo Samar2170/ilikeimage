@@ -45,7 +45,14 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-    setActive(searchParams.get("handler") || "jpeg2png") 
+    const currentHandler = searchParams.get("handler")
+    if (currentHandler) {
+      setActive( currentHandler); 
+    } else {
+      const params = new URLSearchParams(searchParams);
+      params.set("handler", "jpeg2png");
+      replace(`${pathname}?${params.toString()}`);
+    }
   }, [searchParams]);
   return (
     <html>
