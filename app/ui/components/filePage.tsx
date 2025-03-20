@@ -4,6 +4,7 @@ import { PhotoIcon } from "@heroicons/react/24/outline";
 import {ArrowDownTrayIcon, ChevronDownIcon} from "@heroicons/react/24/outline";
 import { navOpts } from "@/app/lib/data/navOpts";
 import { baseUrl } from "@/app/lib/data/constants";
+import { getFingerprint } from "@/app/lib/fingerpint";
 import { FillColors } from "@/app/lib/data/fillColors";
 import ColorSelector from "./colorSelector";
 
@@ -16,6 +17,12 @@ class DownloadFile {
     }
 }
 
+function getFileName(contentDisposition: string | null, defaultName: string) {
+  if (!contentDisposition) return defaultName;
+  const match = contentDisposition.match(/filename="(.+)"/);
+  return match ? match[1] : defaultName;
+}
+
 export default function FilePage(props:{
     handler?: string
 }) {
@@ -26,6 +33,10 @@ export default function FilePage(props:{
     const [colorEnabled, setColorEnabled] = useState(false);
     const [color,setColor] = useState("");
     const [apiUrl,setApiUrl] = useState("");
+    const [visitorId, setVisitorId] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+
     const [heading, setHeading] = useState("");
 
     function generateUuid() : string {
@@ -34,7 +45,6 @@ export default function FilePage(props:{
           return v.toString(16);
         });
       }
-
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
           return;
@@ -46,20 +56,27 @@ export default function FilePage(props:{
         }
       };
 
+      function triggerDownloadFile(df: DownloadFile) {
+        const a = document.createElement("a"); // Create an anchor tag
+        a.href = df.url;
+        a.download = df.name;
+        document.body.appendChild(a);
+        a.click(); // Trigger download
+        document.body.removeChild(a); // Cleanup
+        window.URL.revokeObjectURL(df.url); 
+        setConvertedFile(null);
+      }
     async function downloadFile(res:Response) {
         const blob =await res.blob();
         const url = window.URL.createObjectURL(blob); // Create a temporary URL
-        // const a = document.createElement("a"); // Create an anchor tag
-        // a.href = url;
-        // a.download = res.headers.get("Content-Disposition") || "file"+dst;
-        // document.body.appendChild(a);
-        // a.click(); // Trigger download
-        // document.body.removeChild(a); // Cleanup
-        // window.URL.revokeObjectURL(url); 
-        setConvertedFile(new DownloadFile(res.headers.get("Content-Disposition") || "file"+dst, url));
+        console.log(res.headers);
+        const filename = getFileName(res.headers.get("Content-Disposition"), "file."+dst);
+        const dfile = new DownloadFile(filename, url)
+        setConvertedFile(dfile);
     }
     function handleSubmit() {
         if (file) {
+          setIsLoading(true);
             const formData = new FormData();
             formData.append("file", file);
             formData.append("dst", dst);
@@ -70,14 +87,16 @@ export default function FilePage(props:{
             fetch(baseUrl + apiUrl, {
                 method: "POST",
                 body: formData,
-            })
+                credentials: "include",
+            },
+            )
             .then((res) => {
+                setIsLoading(false);
                 console.log(res);
                 if (res.ok) {
                     downloadFile(res);
-                    setConvertedFile(null);
                     setFile(null);
-                }else {
+                }else if (res.status === 400) {
                     alert(res.statusText);
                 }
             })
@@ -85,7 +104,9 @@ export default function FilePage(props:{
             alert("Please select a file");
         }
     }
+    
     useEffect(() => {
+      console.log(visitorId);
         const h=props.handler;
         const navOpt = navOpts.find((opt) => opt.id === h);
         if (navOpt) {
@@ -97,7 +118,14 @@ export default function FilePage(props:{
             } else {
                 setColorEnabled(false);
             }
-        }
+        } 
+        const fetchFingerprint = async () => {
+          const id = await getFingerprint();
+          const confidence = 0.9;
+          setVisitorId(id);
+        };
+        fetchFingerprint();
+        console.log(visitorId);
       }, [props.handler]);
 
     return (
@@ -178,14 +206,18 @@ export default function FilePage(props:{
                     )}
                     
                     <div className="mt-4 flex text-sm/6 text-gray-600">
+                      {isLoading ? (
+                        <p>Loading...</p>
+                      ):(<></>)}
                       {convertedFile ? (
-                        <a
-                          href="#"
-                          download={convertedFile}
+                        <button
+                          // href={convertedFile.url}
+                          // download={convertedFile.name}
+                          onClick={() => triggerDownloadFile(convertedFile)}
                           className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 focus-within:outline-hidden hover:text-indigo-500"
                         >
                           <span>Download file</span>
-                        </a>
+                        </button>
                       ) : (
                         <p className="text-gray-600">No file converted yet.</p>
                       )}

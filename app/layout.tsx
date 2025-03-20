@@ -1,8 +1,7 @@
 'use client'
 import "./globals.css";
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { useEffect, useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react'
 import {
   Bars3Icon,
@@ -10,7 +9,7 @@ import {
   
 } from '@heroicons/react/24/outline'
 import { useSearchParams,useRouter } from "next/navigation";
-
+import { getFingerprint } from "./lib/fingerpint";
 import { imageOpts, imageConvertOpts, excelOpts, docxPdfOpts } from "./lib/data/navOpts";
 
 function classNames(...classes: string[]) {
@@ -46,7 +45,14 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-    setActive(searchParams.get("handler") || "jpeg2png") 
+    const currentHandler = searchParams.get("handler")
+    if (currentHandler) {
+      setActive( currentHandler); 
+    } else {
+      const params = new URLSearchParams(searchParams);
+      params.set("handler", "jpeg2png");
+      replace(`${pathname}?${params.toString()}`);
+    }
   }, [searchParams]);
   return (
     <html>
@@ -269,7 +275,7 @@ export default function RootLayout({
           
         </div>
         
-        <main className="flex flex-col h-screen  bg-white lg:pl-72 px-4 sm:px-6 lg:px-8">
+        <main className="flex flex-col h-screen bg-white lg:pl-72 px-4 sm:px-6 lg:px-8">
           <div className="px-4 sm:px-6 lg:px-8 bg-white">{children}</div>
         </main>
       </div>
