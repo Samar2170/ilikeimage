@@ -7,6 +7,7 @@ export const endpoints = {
 
     removeBg: 'image/remove-bg/',
     fillBg: 'image/fill-bg/',
+    colorExtract:'image/color-extract/',
 
     convertHeic: 'convert/heic/',
 }

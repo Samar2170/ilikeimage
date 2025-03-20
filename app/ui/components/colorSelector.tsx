@@ -1,40 +1,47 @@
-import React from "react";
-
-
+import React, { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 type Color = {
   name: string;
   value: string;
 };
 
-type ColorPaletteProps = {
+type ColorSelectorProps = {
   colors: Color[];
+  onSelectColor: (colorName: string) => void;
 };
 
-const ColorPalette: React.FC<ColorPaletteProps> = ({ colors }) => {
+const ColorSelector: React.FC<ColorSelectorProps> = ({ colors, onSelectColor }) => {
+  const [selectedPalette, setSelectedPalette] = useState<Color|undefined>(colors[0]);
+
+  useEffect(() => {
+    onSelectColor(selectedPalette?.name || "");
+  },[selectedPalette])
   return (
-    <div className="flex w-max gap-4">
-        <div className="grid grid-cols-12 gap-2">
-        {colors.map((color) => (
-        //   <div
-        //     key={color.name}
-        //     title={color.name}
-        //     className="h-8 w-8 rounded-full cursor-pointer hover:ring-2 hover:ring-offset-2 hover:ring-offset-gray-100 hover:ring-gray-500"
-        //     style={{ backgroundColor: color.value }}
-        //   />
-        <div key={color.name} className="relative group">
-            <div
-            className="h-12 w-12 rounded-full cursor-pointer hover:ring-2 hover:ring-offset-2 hover:ring-offset-gray-100 hover:ring-gray-500"
-            style={{ backgroundColor: color.value }}
-            />
-            <span className="absolute left-1/2 -translate-x-1/2 bottom-10 px-2 py-1 text-xs text-white bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-            {color.name}
-            </span>
-        </div>
-          
-        ))}
-          </div>
-      </div>
+    <div className="max-w-2xl mx-auto p-6 grid grid-cols-2 gap-6">
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Choose a Color Palette</h2>
+      <Select onValueChange={(value) => setSelectedPalette(colors.find(p => p.name === value))}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select a palette" />
+        </SelectTrigger>
+        <SelectContent>
+          {colors.map((palette, index) => (
+            <SelectItem key={index} value={palette.name}>{palette.name}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+    <div>
+      <Card className="h-40 flex items-center justify-center rounded-xl" style={{ backgroundColor: selectedPalette?.value }}>
+        <CardContent>
+          <p className="text-white font-semibold text-lg">{selectedPalette?.name}</p>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
   );
 };
 
-export default ColorPalette;
+export default ColorSelector;

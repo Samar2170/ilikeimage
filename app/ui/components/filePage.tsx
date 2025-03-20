@@ -7,6 +7,7 @@ import { baseUrl } from "@/app/lib/data/constants";
 import { getFingerprint } from "@/app/lib/fingerpint";
 import { FillColors } from "@/app/lib/data/fillColors";
 import ColorSelector from "./colorSelector";
+import ColorPalette from "./colorPallete";
 
 class DownloadFile {
     name: string;
@@ -36,6 +37,9 @@ export default function FilePage(props:{
     const [visitorId, setVisitorId] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    const [colorPaletteEnabled, setColorPaletteEnabled] = useState(false);
+    const [colorPalette, setColorPalette] = useState<string[]>([]);
+
 
     const [heading, setHeading] = useState("");
 
@@ -45,6 +49,9 @@ export default function FilePage(props:{
           return v.toString(16);
         });
       }
+    function selectColor(colorName: string) {
+        setColor(colorName);
+    }
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
           return;
@@ -92,12 +99,20 @@ export default function FilePage(props:{
             )
             .then((res) => {
                 setIsLoading(false);
-                console.log(res);
+                
                 if (res.ok) {
+                  if (colorPaletteEnabled) {
+                      res.json().then((json) => {
+                          setColorPalette(json);
+                      })
+                  } else {
                     downloadFile(res);
                     setFile(null);
+                  }
                 }else if (res.status === 400) {
                     alert(res.statusText);
+                } else {
+                    alert("Something went wrong");
                 }
             })
         } else {
@@ -118,6 +133,11 @@ export default function FilePage(props:{
             } else {
                 setColorEnabled(false);
             }
+            if (navOpt.id==="color-extract") {
+                setColorPaletteEnabled(true);
+            } else {
+                setColorPaletteEnabled(false);
+            }
         } 
         const fetchFingerprint = async () => {
           const id = await getFingerprint();
@@ -125,7 +145,6 @@ export default function FilePage(props:{
           setVisitorId(id);
         };
         fetchFingerprint();
-        console.log(visitorId);
       }, [props.handler]);
 
     return (
@@ -165,34 +184,40 @@ export default function FilePage(props:{
                             />
                         </label>
                         <p className="pl-1">or drag and drop</p>
-                        </div>
+                    </div>
                         <p className="text-xs text-gray-600">PNG, JPG, GIF up to 10MB</p>
                     </div>
                     </div>
                 </div>
             
             { colorEnabled ?
-            <div className="sm:col-span-3">
+            <div className="sm:col-span-full">
               <label htmlFor="color" className="block text-sm/6 font-medium text-gray-900">
                 Color
               </label>
-                <ColorSelector colors={FillColors}/>
+                <ColorSelector colors={FillColors} onSelectColor={selectColor}/>
             </div>
             : <></>}
-                    <div className="mt-6 flex items-center justify-end gap-x-6">
-            
-            <button
-                onClick={(e) => {e.preventDefault(); handleSubmit();}}
-              type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Submit
-            </button>
-          </div>
-          
+            {colorPaletteEnabled ?
+              <div className="sm:col-span-full">
+              <ColorPalette colors={colorPalette} />
+              </div>
+              : <></>}
 
-    
-                <div className="col-span-full">
+            <div className="col-span-full">
+            <div className="flex justify-center gap-x-6">
+                <div className="mt-6 flex items-center justify-end gap-x-6">
+                
+                  <button
+                    onClick={(e) => {e.preventDefault(); handleSubmit();}}
+                  type="submit"
+                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                  Submit
+                  </button>
+                </div>
+                </div>
+            </div>
                 <div className="col-span-full">
                 <label htmlFor="download-file" className="block text-md/6 font-large text-gray-900">
                   Download
@@ -224,9 +249,7 @@ export default function FilePage(props:{
                     </div>
                   </div>
                 </div>
-              </div>
-                </div>
-                
+              </div>                
               </div>
             </div>
           </div>

@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useSearchParams,useRouter } from "next/navigation";
 import { getFingerprint } from "./lib/fingerpint";
-import { imageOpts, imageConvertOpts, excelOpts, docxPdfOpts } from "./lib/data/navOpts";
+import { imageOpts, imageConvertOpts } from "./lib/data/navOpts";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -112,10 +112,10 @@ export default function RootLayout({
                       </ul>
                     </li>
                     <li>                      
-                    <div className="text-xs/6 font-semibold text-gray-400">Image Tools</div>
+                    <div className="text-xs/6 font-semibold text-gray-400">Image Converter</div>
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
-                        {imageOpts.map((item) => (
+                        {imageConvertOpts.map((item) => (
                           <li key={item.name}>
                             <button
                             onClick={() => handleClick(item.id)}
@@ -135,8 +135,8 @@ export default function RootLayout({
                     </li>
                     </li>
                     <li>
-                    <div className="text-xs/6 font-semibold text-gray-400">Image Tools</div>
-                    <li>
+                    {/* <div className="text-xs/6 font-semibold text-gray-400">Image Tools</div> */}
+                    {/* <li>
                       <ul role="list" className="-mx-2 space-y-1">
                         {imageOpts.map((item) => (
                           <li key={item.name}>
@@ -155,7 +155,7 @@ export default function RootLayout({
                           </li>
                         ))}
                       </ul>
-                    </li>
+                    </li> */}
                     </li>
                   </ul>
                 </nav>
@@ -219,7 +219,7 @@ export default function RootLayout({
                     ))}
                   </ul>
                 </li>
-                <li className="">
+                {/* <li className="">
                 <div className="text-xs/6 font-semibold text-gray-400">Document Tools</div>
                   <ul role="list" className="-mx-2 space-y-1">
                     {docxPdfOpts.map((item) => (
@@ -260,7 +260,7 @@ export default function RootLayout({
                       </li>
                     ))}
                   </ul>
-                </li>
+                </li> */}
               </ul>
             </nav>
           </div>
