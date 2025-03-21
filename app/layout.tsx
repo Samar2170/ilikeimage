@@ -10,7 +10,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useSearchParams,useRouter } from "next/navigation";
 import { getFingerprint } from "./lib/fingerpint";
-import { imageOpts, imageConvertOpts } from "./lib/data/navOpts";
+import { imageOpts, imageConvertOpts, imageEditOpts } from "./lib/data/navOpts";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -39,9 +39,15 @@ export default function RootLayout({
   const [active, setActive] = useState(searchParams.get("handler") || "jpeg2png");
 
   function handleClick(id:string) {
+    let subUrl = "";
     const params = new URLSearchParams(searchParams);
-    params.set("handler", id);
-    replace(`${pathname}?${params.toString()}`);
+      params.set("handler", id);
+    if (id==="edit-image") {
+      subUrl = "photoEditor/";
+    }
+      // replace(`${pathname}?${params.toString()}`);
+      replace(`${pathname}${subUrl}?${params.toString()}`);
+
   }
 
   useEffect(() => {
@@ -113,7 +119,6 @@ export default function RootLayout({
                     </li>
                     <li>                      
                     <div className="text-xs/6 font-semibold text-gray-400">Image Converter</div>
-                    <li>
                       <ul role="list" className="-mx-2 space-y-1">
                         {imageConvertOpts.map((item) => (
                           <li key={item.name}>
@@ -133,7 +138,28 @@ export default function RootLayout({
                         ))}
                       </ul>
                     </li>
+                    <li>                      
+                    <div className="text-xs/6 font-semibold text-gray-400">Image Editor</div>
+                      <ul role="list" className="-mx-2 space-y-1">
+                        {imageEditOpts.map((item) => (
+                          <li key={item.name}>
+                            <button
+                            onClick={() => handleClick(item.id)}
+                              className={classNames(
+                                active===item.id
+                                  ? 'bg-gray-800 text-white'
+                                  : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                                'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
+                              )}
+                            >
+                              <item.icon aria-hidden="true" className="size-6 shrink-0" />
+                              {item.name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </li>
+
                     <li>
                     {/* <div className="text-xs/6 font-semibold text-gray-400">Image Tools</div> */}
                     {/* <li>
@@ -202,6 +228,27 @@ export default function RootLayout({
                 <div className="text-xs/6 font-semibold text-gray-400">Image Convertor</div>
                   <ul role="list" className="-mx-2 space-y-1">
                     {imageConvertOpts.map((item) => (
+                      <li key={item.name}>
+                        <button
+                          onClick={() => handleClick(item.id)}
+                          className={classNames(
+                            active===item.id
+                              ? 'bg-gray-800 text-white'
+                              : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
+                          )}
+                        >
+                          <item.icon aria-hidden="true" className="size-6 shrink-0" />
+                          {item.name}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+                <li>
+                <div className="text-xs/6 font-semibold text-gray-400">Image Editor</div>
+                  <ul role="list" className="-mx-2 space-y-1">
+                    {imageEditOpts.map((item) => (
                       <li key={item.name}>
                         <button
                           onClick={() => handleClick(item.id)}

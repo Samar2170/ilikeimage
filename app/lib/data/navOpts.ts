@@ -14,6 +14,9 @@ export  const imageConvertOpts = [
     {id:'heic2jpeg', name: 'Convert HEIC to JPEG', apiPath: endpoints.convertHeic, icon: HomeIcon, current: true, dst:"JPEG" },
     {id:'heic2png', name: 'Convert HEIC to PNG', apiPath: endpoints.convertHeic, icon: UsersIcon, current: false, dst:"PNG" },
   ]
+export const imageEditOpts = [
+    {id: 'edit-image', name: 'Edit Image', apiPath: 'photoEditor/', icon: XMarkIcon, current: false, dst:"" },
+]
 export  const excelOpts = [
     {id:'xlsx2csv', name: 'Excel to CSV', apiPath: endpoints.convertExcel, icon: ChartPieIcon, current: false, dst:"csv" },
     {id:'csv2xlsx', name: 'CSV to Excel', apiPath: endpoints.convertExcel, icon: ChartPieIcon, current: false, dst:"xlsx" },
