@@ -91,6 +91,9 @@ export default function FilePage(props:{
             if (colorEnabled) {
                 formData.append("color", color);
             }
+            console.log('baseUrl', baseUrl);
+            console.log('apiUrl', apiUrl);
+            
             fetch(baseUrl + apiUrl, {
                 method: "POST",
                 body: formData,
