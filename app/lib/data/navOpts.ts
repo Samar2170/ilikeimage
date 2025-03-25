@@ -6,33 +6,33 @@ export type NavOpt = {
   name: string;
   apiPath: string;
   icon: any;
-  current: boolean;
+  hasPath: boolean;
   dst: string;
 }
 
 
 export const imageOpts : NavOpt[] = [
-    {id:'removebg', name: 'Remove Background', apiPath: endpoints.removeBg, icon: CalendarIcon, current: false, dst:"" },
-    {id:'fillbg', name: 'Fill background', apiPath: endpoints.fillBg, icon: DocumentDuplicateIcon, current: false, dst:"" },
-    {id: 'color-extract', name: 'Color Extract', apiPath: endpoints.colorExtract, icon: DocumentDuplicateIcon, current: false, dst:"" },
+    {id:'removebg', name: 'Remove Background', apiPath: endpoints.removeBg, icon: CalendarIcon, hasPath: false, dst:"" },
+    {id:'fillbg', name: 'Fill background', apiPath: endpoints.fillBg, icon: DocumentDuplicateIcon, hasPath: false, dst:"" },
+    {id: 'color-extract', name: 'Color Extract', apiPath: endpoints.colorExtract, icon: DocumentDuplicateIcon, hasPath: false, dst:"" },
   ]
 export  const imageConvertOpts : NavOpt[] = [
-    {id:'jpeg2png', name: 'Convert JPEG to PNG', apiPath: endpoints.convertImage, icon: HomeIcon, current: true, dst:"png" },
-    {id:'png2jpeg', name: 'Convert PNG to JPEG', apiPath: endpoints.convertImage, icon: HomeIcon, current: true, dst:"jpeg" },
-    {id:'jpeg2webp', name: 'Convert JPEG to WEBP', apiPath: endpoints.convertImage, icon: HomeIcon, current: true, dst:"webp" },
-    {id:'heic2jpeg', name: 'Convert HEIC to JPEG', apiPath: endpoints.convertHeic, icon: HomeIcon, current: true, dst:"JPEG" },
-    {id:'heic2png', name: 'Convert HEIC to PNG', apiPath: endpoints.convertHeic, icon: UsersIcon, current: false, dst:"PNG" },
+    {id:'jpeg2png', name: 'Convert JPEG to PNG', apiPath: endpoints.convertImage, icon: HomeIcon, hasPath: false, dst:"png" },
+    {id:'png2jpeg', name: 'Convert PNG to JPEG', apiPath: endpoints.convertImage, icon: HomeIcon, hasPath: false, dst:"jpeg" },
+    {id:'jpeg2webp', name: 'Convert JPEG to WEBP', apiPath: endpoints.convertImage, icon: HomeIcon, hasPath: false, dst:"webp" },
+    {id:'heic2jpeg', name: 'Convert HEIC to JPEG', apiPath: endpoints.convertHeic, icon: HomeIcon, hasPath: false, dst:"JPEG" },
+    {id:'heic2png', name: 'Convert HEIC to PNG', apiPath: endpoints.convertHeic, icon: UsersIcon, hasPath: false, dst:"PNG" },
   ]
 export const imageEditOpts : NavOpt[] = [
-    {id: 'edit-image', name: 'Edit Image', apiPath: 'imageEditor/', icon: XMarkIcon, current: false, dst:"" },
-    {id: 'crop-image', name: 'Crop Image', apiPath: 'imageCrop/', icon: XMarkIcon, current: false, dst:"" }
+    {id: 'edit-image', name: 'Edit Image', apiPath: 'imageEditor/', icon: XMarkIcon, hasPath: true, dst:"" },
+    {id: 'crop-image', name: 'Crop Image', apiPath: 'imageCrop/', icon: XMarkIcon, hasPath: true, dst:"" }
 ]
 export  const excelOpts = [
-    {id:'xlsx2csv', name: 'Excel to CSV', apiPath: endpoints.convertExcel, icon: ChartPieIcon, current: false, dst:"csv" },
-    {id:'csv2xlsx', name: 'CSV to Excel', apiPath: endpoints.convertExcel, icon: ChartPieIcon, current: false, dst:"xlsx" },
+    {id:'xlsx2csv', name: 'Excel to CSV', apiPath: endpoints.convertExcel, icon: ChartPieIcon, hasPath: false, dst:"csv" },
+    {id:'csv2xlsx', name: 'CSV to Excel', apiPath: endpoints.convertExcel, icon: ChartPieIcon, hasPath: false, dst:"xlsx" },
   ]
 export  const docxPdfOpts = [
-    {id:'docx2pdf', name: 'Word to Pdf', apiPath: endpoints.convertDocxPdf, icon: FolderIcon, current: false, dst:"" },
+    {id:'docx2pdf', name: 'Word to Pdf', apiPath: endpoints.convertDocxPdf, icon: FolderIcon, hasPath: false, dst:"" },
   ]
 
 // combine all options
