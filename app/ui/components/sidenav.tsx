@@ -7,7 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useSearchParams,useRouter } from "next/navigation";
 import { getFingerprint } from "../../lib/fingerpint";
-import { imageOpts, imageConvertOpts, imageEditOpts } from "../../lib/data/navOpts";
+import { imageOpts, imageConvertOpts, imageEditOpts, NavOpt } from "../../lib/data/navOpts";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -19,12 +19,12 @@ export default function SideNav() {
     const { replace } = useRouter();
     const [active, setActive] = useState(searchParams.get("handler") || "jpeg2png");
   
-    function handleClick(id:string) {
+    function handleClick(navO: NavOpt) {
       let subUrl = "";
       const params = new URLSearchParams(searchParams);
-        params.set("handler", id);
-      if (id==="edit-image") {
-        subUrl = "photoEditor/";
+        params.set("handler", navO.id);
+      if (navO.hasPath) {
+        subUrl = navO.apiPath;
       }
         // replace(`${pathname}?${params.toString()}`);
         replace(`${pathname}${subUrl}?${params.toString()}`);
@@ -79,7 +79,7 @@ export default function SideNav() {
                         {imageOpts.map((item) => (
                           <li key={item.name}>
                             <button
-                              onClick={() => handleClick(item.id)}
+                              onClick={() => handleClick(item)}
                               className={classNames(
                                 active===item.id
                                   ? 'bg-gray-800 text-white'
@@ -100,7 +100,7 @@ export default function SideNav() {
                         {imageConvertOpts.map((item) => (
                           <li key={item.name}>
                             <button
-                            onClick={() => handleClick(item.id)}
+                            onClick={() => handleClick(item)}
                               className={classNames(
                                 active===item.id
                                   ? 'bg-gray-800 text-white'
@@ -121,7 +121,7 @@ export default function SideNav() {
                         {imageEditOpts.map((item) => (
                           <li key={item.name}>
                             <button
-                            onClick={() => handleClick(item.id)}
+                            onClick={() => handleClick(item)}
                               className={classNames(
                                 active===item.id
                                   ? 'bg-gray-800 text-white'
@@ -186,7 +186,7 @@ export default function SideNav() {
                     {imageOpts.map((item) => (
                       <li key={item.name}>
                         <button
-                          onClick={() => handleClick(item.id)}
+                          onClick={() => handleClick(item)}
                           className={classNames(
                             active===item.id
                               ? 'bg-gray-800 text-white'
@@ -207,7 +207,7 @@ export default function SideNav() {
                     {imageConvertOpts.map((item) => (
                       <li key={item.name}>
                         <button
-                          onClick={() => handleClick(item.id)}
+                          onClick={() => handleClick(item)}
                           className={classNames(
                             active===item.id
                               ? 'bg-gray-800 text-white'
@@ -228,7 +228,7 @@ export default function SideNav() {
                     {imageEditOpts.map((item) => (
                       <li key={item.name}>
                         <button
-                          onClick={() => handleClick(item.id)}
+                          onClick={() => handleClick(item)}
                           className={classNames(
                             active===item.id
                               ? 'bg-gray-800 text-white'
