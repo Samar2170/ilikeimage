@@ -67,8 +67,8 @@ export default function SideNav() {
                 <div className="flex h-16 shrink-0 items-center">
                   <img
                     alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                    className="h-8 w-auto"
+                    src="/ilike-4.png"
+                    className="h-24 w-auto"
                   />
                 </div>
                 <nav className="flex flex-1 flex-col">
@@ -174,8 +174,8 @@ export default function SideNav() {
             <div className="flex h-16 shrink-0 items-center">
               <img
                 alt="Your Company"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-auto"
+                src="/ilike-4.png"
+                className="h-32 w-auto"
               />
             </div>
             <nav className="flex flex-1 flex-col">
